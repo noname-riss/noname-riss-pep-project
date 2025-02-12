@@ -47,8 +47,7 @@ public List<Message> getAllMessages()
         String sql="Select * From Message";
         PreparedStatement ps = conn.prepareStatement(sql);
        
-    
-        ps.executeQuery();
+
 
         ResultSet rs = ps.executeQuery();
             while(rs.next()){
@@ -74,7 +73,7 @@ public Message getMessageByID(int mID)
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setInt(1, mID);
     
-        ps.executeQuery();
+        
 
         ResultSet rs = ps.executeQuery();
             while(rs.next()){
@@ -113,23 +112,27 @@ public void deleteMessageByID(int mID)
 }
 
 
-public void updateMessageByID(int mID,String newText)
+public int updateMessageByID(int mID, String newText)
 {
     Connection conn= ConnectionUtil.getConnection();
     
     try {
-        String sql="update message set message_body=? Where message_id=?";
+        String sql="update message set message_text=? Where message_id=? ;";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1, newText);
         ps.setInt(2,mID);
     
-        ps.executeUpdate();
+        
 
+        int rowupdated = ps.executeUpdate();
+        return rowupdated;
     
         } catch (SQLException e) {
             // TODO: handle exception
             e.printStackTrace();
         }
+
+        return 0;
 }
 
 

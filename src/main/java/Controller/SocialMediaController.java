@@ -44,7 +44,7 @@ public SocialMediaController()
         app.get("/messages", this::getMessageHandler);
         app.get("/messages/{message_id}", this::getMessageByIDHandler);
         app.delete("/messages/{message_id}",this::deleteMessageHandler);
-        app.patch("/message/{message_id}",this::updateMessageHandler);
+        app.patch("/messages/{message_id}",this::updateMessageHandler);
         app.get("/accounts/{account_id}/messages",this::messageByUserHandler);
         return app;
     }
@@ -140,9 +140,9 @@ public SocialMediaController()
     {
         ObjectMapper oM = new ObjectMapper();
         int mid = Integer.parseInt(ctx.pathParam("message_id"));
-        String deleteAttempt =messageService.deleteMessage(mid);
+        Message deleteAttempt =messageService.deleteMessage(mid);
         if(deleteAttempt == null){
-            ctx.status(400);
+            ctx.status(200);
         }else{
             ctx.status(200);
             ctx.json(oM.writeValueAsString(deleteAttempt));
@@ -154,9 +154,17 @@ public SocialMediaController()
     private void updateMessageHandler(Context ctx) throws JsonProcessingException
     {
         ObjectMapper oM = new ObjectMapper();
+        String bodyTxt=ctx.body();
+        String[] messageArray=bodyTxt.split(":");
+        String actualText=messageArray[1];
+        messageArray=actualText.split("}");
+        actualText=messageArray[0];
+        messageArray=actualText.split("\"");
+        actualText=messageArray[1];
+        
         int mid = Integer.parseInt(ctx.pathParam("message_id"));
-        String mText = ctx.pathParam("message_text");
-        Message updatMessage =messageService.updateMessage(mid,mText);
+    
+        Message updatMessage =messageService.updateMessage(mid,actualText);
         if(updatMessage == null){
             ctx.status(400);
         }else{

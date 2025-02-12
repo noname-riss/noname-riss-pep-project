@@ -40,22 +40,24 @@ public class MessageService {
         return messageDAO.getMessageByID(miD);
     }
 
-    public String deleteMessage(int mid)
+    public Message deleteMessage(int mid)
     {
         if(messageDAO.getMessageByID(mid)!=null){
-            String messageText = messageDAO.getMessageByID(mid).getMessage_text();
+            Message oldMessage = messageDAO.getMessageByID(mid);
             messageDAO.deleteMessageByID(mid);
-            return messageText;
+            return oldMessage;
         }
-        return "";
+        return null;
     }
 
 
     public Message updateMessage(int mid, String mText)
     {
-        if(messageDAO.getMessageByID(mid)!=null&&mText.length()<255&&!mText.equals(""))
+        if(messageDAO.getMessageByID(mid)!=null&&mText.length()<255&&mText.length()>0)
         {
-            messageDAO.updateMessageByID(mid, mText);
+            int rows = messageDAO.updateMessageByID(mid, mText);
+
+            if(rows>0)
             return messageDAO.getMessageByID(mid);
         }
         return null;
